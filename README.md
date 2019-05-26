@@ -1,6 +1,6 @@
 # gulpServer
 
-> 版本：gulp 4.0
+> 版本：gulp 3.0
 
  *魏国 2019/05/26*
 
@@ -8,11 +8,6 @@
 
 gulp
 
-使用前需要先全局安装 `gulp4.0`
-
-```bash
-  npm install --global gulp-cli
-```
 
 ## 使用方法
 
