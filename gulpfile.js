@@ -13,7 +13,7 @@ const gulp = require('gulp'),
     autoprefix = require('gulp-autoprefixer'), // CSS前缀
     htmlmin = require('gulp-htmlmin'), // HTML压缩
     open = require('gulp-open'),
-    clean = require('gulp-clean'), // 清空指定文件夹
+	del = require('del'), // 清空指定文件夹
     host = ip.address(),
     port = '9099',
     baseRoot = process.env.INIT_CWD;
@@ -52,7 +52,7 @@ const imgComplie = function () {
 
 const lessCompile = function () {
     // less编译
-    return gulp.src( baseRoot + '/css/*.less' )
+    return gulp.src( baseRoot + '/less/*.less' )
     /*gulp.src(baseRoot + '/less/style.less')*/
     .pipe(less())
     .pipe(autoprefix('last 3 versions'))  // 前缀
@@ -94,8 +94,8 @@ const watchCode = function () {
         gulp.watch([baseFile + '/*.html'], gulp.series(htmlCompile));
         gulp.watch([baseFile + '/js/*.js'], gulp.series(jsCompile));
         gulp.watch(baseFile + '/css/*.css', gulp.series(cssCompile));
-        gulp.watch(baseFile + '/imgs/*', gulp.series(imgComplie));
-        gulp.watch(baseFile + '/css/*.less', gulp.series(lessCompile));
+        gulp.watch(baseFile + '/img/*', gulp.series(imgComplie));
+        gulp.watch(baseFile + '/less/*.less', gulp.series(lessCompile));
         resolve();
     });
 };
@@ -151,7 +151,7 @@ const htmlMin = function () {
         };
         gulp.src(baseRoot + '/*.html')
         .pipe(htmlmin(options))
-        .pipe(gulp.dest(baseRoot + '/build/html'));
+        .pipe(gulp.dest(baseRoot + '/build'));
         resolve();
     });
 };
@@ -169,11 +169,13 @@ const imgMin = function() {
 const cleanBuild = function () {
     // 清除build下的文件
     // return
-    return new Promise((resolve) => {
-        gulp.src(baseRoot + '/build/*')
-        .pipe(clean());
-        resolve()
-    })
+	return del([
+		// 'dist/report.csv',
+		// 这里我们使用一个通配模式来匹配 `mobile` 文件夹中的所有东西
+		baseRoot + '/build/*',
+		// 我们不希望删掉这个文件，所以我们取反这个匹配模式
+		// '!dist/mobile/deploy.json'
+	]);
 };
 
 //gulp.series|4.0 依赖顺序执行
@@ -183,8 +185,4 @@ const cleanBuild = function () {
 gulp.task('start', gulp.series(gulp.parallel(connectServe, watchCode, openInBrowser)));
 
 // 打包压缩
-let build = gulp.series(cleanBuild, gulp.parallel(htmlMin, imgMin, cssMin, jsMin));
-gulp.task('build', build);
-
-gulp.task('less', lessCompile);
-
+gulp.task('build', gulp.series(cleanBuild, gulp.parallel(htmlMin, imgMin, cssMin, jsMin)));
