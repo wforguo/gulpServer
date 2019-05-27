@@ -39,3 +39,6 @@ gulp start
 gulp build
 
 ```
+
+
+注：启动时报：`Error: listen EADDRINUSE 10.96.120.82:8888` 说明该端口被占用了

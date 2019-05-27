@@ -15,7 +15,7 @@ const gulp = require('gulp'),
     open = require('gulp-open'),
     clean = require('gulp-clean'), // 清空指定文件夹
     host = ip.address(),
-    port = '8888',
+    port = '9099',
     baseRoot = process.env.INIT_CWD;
 
 gutil.log(baseRoot);
@@ -86,16 +86,16 @@ const connectServe = function () {
 const watchCode = function () {
     return new Promise(resolve => {
         // 监听
-        // gutil.log(baseRoot);
+        gutil.log(baseRoot);
         let baseFile = baseRoot;
         // 斜杠转义
         baseFile = baseFile.replace(/\\/g, "/");
-        // gutil.log(baseFile);
-        gulp.watch([baseFile + '/*.html'], htmlCompile);
-        gulp.watch([baseFile + '/js/*.js'], jsCompile);
-        gulp.watch(baseFile + '/css/*.css', cssCompile);
-        gulp.watch(baseFile + '/imgs/*', imgComplie);
-        gulp.watch(baseFile + '/css/*.less', lessCompile);
+        gutil.log(baseFile);
+        gulp.watch([baseFile + '/*.html'], gulp.series(htmlCompile));
+        gulp.watch([baseFile + '/js/*.js'], gulp.series(jsCompile));
+        gulp.watch(baseFile + '/css/*.css', gulp.series(cssCompile));
+        gulp.watch(baseFile + '/imgs/*', gulp.series(imgComplie));
+        gulp.watch(baseFile + '/css/*.less', gulp.series(lessCompile));
         resolve();
     });
 };
